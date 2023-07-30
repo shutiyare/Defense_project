@@ -46,6 +46,25 @@
 			padding-bottom: 100px;
 			border-radius: 15px;
 		}
+
+		.bg {
+			background-color: aliceblue;
+		}
+
+		input[type="number"]:focus,
+		input[type="password"]:focus {
+			outline: 1px solid black;
+			border: none;
+			box-shadow: none;
+		}
+
+		input[type="number"],
+		input[type="password"] {
+			border: 1px groove black;
+			/* outline: 0.5px solid black; */
+			/* border-bottom: .5px solid red; */
+			background-color: aliceblue;
+		}
 	</style>
 </head>
 
@@ -93,9 +112,6 @@
 						<nav class="site-navbar">
 							<ul>
 								<li class="nav-item">
-									<a class="nav-link active" aria-current="page" href="{{url_for('home')}}">Home</a>
-								</li>
-								<li class="nav-item">
 									<a class="nav-link active" aria-current="page"
 										href="{{url_for('predictcrop')}}">crop recommendation</a>
 								</li>
@@ -105,6 +121,10 @@
 								</li>
 								<li class="nav-item">
 									<a class="nav-link active" href="#">disease</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link active" aria-current="page"
+										href="{{url_for('logout')}}">logout</a>
 								</li>
 								<!-- <li><a href="Javascript:void(0)">Projects</a></li>
                             <li><a href="testimonail.html">Testimonail</a></li>
@@ -128,78 +148,69 @@
 	<!--===============================================================================-->
 	<!-- <div class="container my-5 mt-3 bg-light">
 		<h1>Crop Recommendation <span class="text-success">🌱</span></h1> -->
-	<div class="container my-5 mt-3 bg-light rounded py-1 px-5 ">
-		<div class="row">
-			<div class="col-2"></div>
-			<div class="col-8">
-				<div class=" bg-light fw-bold fs-4 mt-4 py-3   ">
-					<h1>{{x}}</h1>
-				</div>
-			</div>
-			<div class="col-2"></div>
-		</div>
+	<div class="container my-5 mt-3 bg  rounded py-1 px-5 ">
 		<form method="POST" action="{{ url_for('predictcrop') }}" class="mt-5">
 			<div class="row mt-4">
 
 
-				<div class="col-md-4">
+				<div class="col-md-6">
 					<label for="Nitrogen">Nitrogen</label>
-					<input type="number" id="Nitrogen" name="Nitrogen" placeholder="Enter Nitrogen" class="form-control"
-						required>
+					<input type="number" id="Nitrogen" name="Nitrogen" placeholder="Enter Nitrogen from 0-140"
+						class="form-control" required>
 					{% if nitrogen_error %}
 					<div class="alert alert-danger">{{ nitrogen_error }}</div>
 					{% endif %}
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-6">
 					<label for="Phosphorus">Phosphorus</label>
-					<input type="number" id="Phosphorus" name="Phosphorus" placeholder="Enter Phosphorus"
+					<input type="number" id="Phosphorus" name="Phosphorus" placeholder="Enter Phosphorus from 5-145"
 						class="form-control" required>
 					{% if phosphorus_error %}
 					<div class="text-danger">{{ phosphorus_error }}</div>
 					{% endif %}
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-6">
 					<label for="Potassium">Potassium</label>
-					<input type="number" id="Potassium" name="Potassium" placeholder="Enter Potassium"
+					<input type="number" id="Potassium" name="Potassium" placeholder="Enter Potassium from 5-205"
 						class="form-control" required>
 					{% if potassium_error %}
 					<div class="text-danger">{{ potassium_error }}</div>
 					{% endif %}
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-6">
 					<label for="Temperature">Temperature</label>
 					<input type="number" step="0.01" id="Temperature" name="Temperature"
-						placeholder="Enter Temperature in °C" class="form-control" required>
+						placeholder="Enter Temperature in °C from 8-43" class="form-control" required>
 					{% if temperature_error %}
 					<div class="text-danger">{{ temperature_error }}</div>
 					{% endif %}
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-6">
 					<label for="Humidity">Humidity</label>
-					<input type="number" step="0.01" id="Humidity" name="Humidity" placeholder="Enter Humidity in %"
-						class="form-control" required>
+					<input type="number" step="0.01" id="Humidity" name="Humidity"
+						placeholder="Enter Humidity in % from 14-99" class="form-control" required>
 					{% if humidity_error %}
 					<div class="text-danger">{{ humidity_error }}</div>
 					{% endif %}
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-6">
 					<label for="pH">pH</label>
-					<input type="number" step="0.01" id="pH" name="pH" placeholder="Enter pH value" class="form-control"
-						required>
+					<input type="number" step="0.01" id="pH" name="pH" placeholder="Enter pH value from 3-9"
+						class="form-control" required>
 					{% if ph_error %}
 					<div class="text-danger">{{ ph_error }}</div>
 					{% endif %}
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-6">
 					<label for="Rainfall">Rainfall</label>
-					<input type="number" step="0.01" id="Rainfall" name="Rainfall" placeholder="Enter Rainfall in mm"
-						class="form-control" required>
+					<input type="number" step="0.01" id="Rainfall" name="Rainfall"
+						placeholder="Enter Rainfall in mm from 20-298" class="form-control" required>
 					{% if rainfall_error %}
 					<div class="text-danger">{{ rainfall_error }}</div>
 					{% endif %}
 				</div>
 
-				<div class="col-md-12 text-center">
+				<div class="col-md-6 mt-4 mb-4 tw-100 ext-center">
 					<button type="submit" class="btn btn-primary btn-lg">Get Recommendation</button>
 					<!-- <button type="submit" onclick="window.location.href='resultpred.html'">Search</button> -->
 					<!-- <a href="resultpred.html"><button>Go to Example Website</button></a> -->
@@ -212,17 +223,17 @@
 
 		</form>
 
-	</div>
+		{% if prediction %}
+		<div class="card bg-light rounded mb-3" style="width: 18rem;">
 
-	{% if prediction %}
-	<div class="card bg-dark rounded" style="width: 18rem;">
-
-		<div class="card-body">
-			<h5 class="card-title">Recommend Crop IS 🌱</h5>
-			<p class="card-text text-light">{{prediction }}</p>
+			<div class="card-body">
+				<h5 class="card-title">Recommend Crop IS 🌱</h5>
+				<p class="card-text text-dark">{{prediction }}</p>
+			</div>
 		</div>
+		{% endif %}
 	</div>
-	{% endif %}
+
 
 	</div>
 

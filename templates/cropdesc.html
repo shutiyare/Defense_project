@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cropdescription</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5 bg-light shadow-lg w-100 h-100 my-4">
+        <div class="d-flex justify-content-around align-items-center">
+            <h1 class="text-center fw-bold text-primary ">🌾 This page is About Crop Recommendation Details.</h1>
+            <a href="{{url_for('home')}}">🔙</a>
+        </div>
+        <hr>
+        <div class="p-3 border border-start-2 ">
+            <div class="col-12 rounded-lg fs-5">
+                <p>Crop recommendation are designed to recommend things to
+                    the user based on many different factors. These systems predict the most likely product that the
+                    users are most likely to purchase and are of interest to. Companies like Netflix, Amazon, etc. use
+                    recommender systems to help their users to identify the correct product or movies for them. </p>
+                <p>this system takes 7 paramaters then it will predict the best crop to be cultivated. the 7 parameters
+                    that this system takes are temperature, humidity, Rainfall, Ph, nitrogen, potassium, phosphorous.
+                </p>
+                <p>The farmer has to collect the amount of each element that he can get aroun his farm and the put this
+                    system and will get the best crop to be cultivated based on that collect elements of data .</p>
+                <p>Each of these elements have maximum adn minimum numbers that the user must enter other wise the
+                    system will throw error so that use the credentials we will list below .</p>
+                <h3 class="text-danger">Notice :</h3>
+                <p>The miminum and maximum numbers are based on the dataset that we used .</p>
+                <p>Here are The list :</p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Element</th>
+                            <th scope="col">Minimum</th>
+                            <th scope="col">Maximum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Nitrogen</td>
+                            <td>0</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Phosphorus</td>
+                            <td>5</td>
+                            <td>145</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>Potassium</td>
+                            <td>5</td>
+                            <td>205</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4</th>
+                            <td>Temperature</td>
+                            <td>8</td>
+                            <td>243</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">5</th>
+                            <td>Humidity</td>
+                            <td>14</td>
+                            <td>99</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">6</th>
+                            <td>Ph</td>
+                            <td>3</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">7</th>
+                            <td>Rainfall</td>
+                            <td>20</td>
+                            <td>298</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

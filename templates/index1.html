@@ -53,11 +53,9 @@
                   <div class="navbar-area">
                      <nav class="site-navbar">
                         <ul>
+
                            <li class="nav-item">
-                              <a class="nav-link active" aria-current="page" href="{{url_for('home')}}">home</a>
-                           </li>
-                           <li class="nav-item">
-                              <a class="nav-link active" aria-current="page" href="{{url_for('predictcrop')}}">crop
+                              <a class="nav-link active" aria-current="page" href="{{url_for('predictcrop')}}">Crop
                                  recommendation</a>
                            </li>
                            <li class="nav-item">
@@ -65,8 +63,12 @@
                                  href="{{url_for('predict')}}">Fertilizer</a>
                            </li>
                            <li class="nav-item">
-                              <a class="nav-link active" href="#">disease</a>
+                              <a class="nav-link active" href="#">Disease</a>
 
+                           </li>
+                           <li class="nav-item">
+                              <a class="nav-link active" aria-current="page" href="{{url_for('logout')}}"> <span
+                                    class="text-danger fs-5 fw-bold">📤logout </span></a>
                            </li>
 
                            <!-- <li><a href="Javascript:void(0)">Projects</a></li>
@@ -88,28 +90,23 @@
       <!-- top -->
       <div class="slider_main">
          <!-- carousel code -->
-         <div id="banner1" class="carousel slide carousel-fade" data-ride="carousel" data-interval="6000">
-            <ol class="carousel-indicators">
+         <div id="banner1" class="carousel slide carousel-fade" data-ride="carousel">
+            <!-- <ol class="carousel-indicators">
                <li data-target="#banner1" data-slide-to="0" class="active"></li>
                <li data-target="#banner1" data-slide-to="1"></li>
                <li data-target="#banner1" data-slide-to="2"></li>
-            </ol>
+            </ol> -->
             <div class="carousel-inner" role="listbox">
                <div class="carousel-item active">
-                  <picture>
-                     <source srcset="/static/images/banner.jpg">
-
-                     <img srcset="/static/images/banner.jpg" alt="responsive image" class="d-block img-fluid">
-                  </picture>
-
+                  <img src="/static/images/slider.jpg" alt="responsive image" class="d-block img-fluid">
                </div>
                <!-- /.carousel-item -->
+
                <div class="carousel-item">
-                  <picture>
-
-                     <img srcset="/static/images/banner.jpg" alt="responsive image" class="d-block img-fluid">
-                  </picture>
-
+                  <img src="/static/images/banner.jpg" alt="responsive image" class="d-block img-fluid">
+               </div>
+               <div class="carousel-item">
+                  <img src="/static/images/grass.jpg" alt="responsive image" class="d-block img-fluid">
                </div>
                <div class="container-fluid">
                   <div class="row">
@@ -142,14 +139,14 @@
 
                      <h3><b>How they can use </b></h3>
                      <p>
-                     <ul>
+                     <ul class="ul">
                         <li>first farmer must have data for their crops and soil</li>
                         <ol>second they will enter their data to system</ol>
                         <li>It will predict & will give result</li>
 
                      </ul>
                      </p>
-                     <a class="read_more" href="#">Learn More</a>
+                     <a class="read_more" href="#ids">Learn More</a>
                   </div>
                </div>
                <div class="col-lg-6 col-md-12">
@@ -183,7 +180,7 @@
                   </div>
                </div>
             </div>
-            <div class="row">
+            <div class="row" id="ids">
                <div class="col-md-4">
                   <div class="services_box_main">
                      <div class="services_box text_align_left">
@@ -192,10 +189,10 @@
                            <h4><b>Crop recommendation</b>
                            </h4><br>
 
-                           <p>sed do eiusmod tempor incididunt ut
-                              labore et dolore magna aliqua. </p>
+                           <p>Crop recommendation is is recommendation best
+                              crop to cltivate farmer </p>
                            <br>
-                           <a class="read_more" href="#">Read More</a>
+                           <a class="read_more" href="{{url_for('cropdesc')}}">Read More</a>
                         </div>
                      </div>
 
@@ -209,10 +206,10 @@
                            <h4><b>Fertilizer recommendation</b>
                            </h4><br>
 
-                           <p>sed do eiusmod tempor incididunt ut
-                              labore et dolore magna aliqua. </p>
+                           <p>Fertilizer recommendation is give farmer suitable
+                              fertilizer of his or her crop </p>
                            <br>
-                           <a class="read_more" href="#">Read More</a>
+                           <a class="read_more" href="{{url_for('fertdesc')}}">Read More</a>
                         </div>
                      </div>
                      <!-- <a class="read_more" href="services.html">Read More</a> -->
@@ -226,8 +223,8 @@
                            <h4><b>crop disease detection</b>
                            </h4><br>
 
-                           <p>sed do eiusmod tempor incididunt ut
-                              labore et dolore magna aliqua. </p>
+                           <p>crop disease detection is predict type of disease leaf
+                              has how you can protect </p>
                            <br>
                            <a class="read_more" href="#">Read More</a>
                         </div>

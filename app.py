@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, url_for, redirect, flash
+from flask import Flask, request, render_template, url_for, redirect, flash, session
 import pickle
 from markupsafe import Markup
 import pandas as pd
@@ -19,60 +19,82 @@ from flask_bootstrap import Bootstrap
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
-
+import bcrypt
 # from utils.model import ResNet9
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+db = SQLAlchemy(app)
+app.secret_key = 'secret_key'
 
-login_manager = LoginManager()
-login_manager.init_app(app)
 
-bootstrap = Bootstrap(app)
-app.config['DEBUG'] = True
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///flaskcrud.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100))
+
+    def __init__(self, email, password, name):
+        self.name = name
+        self.email = email
+        self.password = bcrypt.hashpw(password.encode(
+            'utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+    def check_password(self, password):
+        return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
+
+
+with app.app_context():
+    db.create_all()
+
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+
+# bootstrap = Bootstrap(app)
+# app.config['DEBUG'] = True
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///flaskcrud.db"
+# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # importing pickle files
 model = pickle.load(open('models/rf_pipeline.pkl', 'rb'))
 ferti = pickle.load(open('models/fertname_dict.pkl', 'rb'))
 loaded_model = pickle.load(open("models/RandomForest.pkl", 'rb'))
-disease_classes = ['Apple___Apple_scab',
-                   'Apple___Black_rot',
-                   'Apple___Cedar_apple_rust',
-                   'Apple___healthy',
-                   'Blueberry___healthy',
-                   'Cherry_(including_sour)___Powdery_mildew',
-                   'Cherry_(including_sour)___healthy',
-                   'Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot',
-                   'Corn_(maize)___Common_rust_',
-                   'Corn_(maize)___Northern_Leaf_Blight',
-                   'Corn_(maize)___healthy',
-                   'Grape___Black_rot',
-                   'Grape___Esca_(Black_Measles)',
-                   'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)',
-                   'Grape___healthy',
-                   'Orange___Haunglongbing_(Citrus_greening)',
-                   'Peach___Bacterial_spot',
-                   'Peach___healthy',
-                   'Pepper,_bell___Bacterial_spot',
-                   'Pepper,_bell___healthy',
-                   'Potato___Early_blight',
-                   'Potato___Late_blight',
-                   'Potato___healthy',
-                   'Raspberry___healthy',
-                   'Soybean___healthy',
-                   'Squash___Powdery_mildew',
-                   'Strawberry___Leaf_scorch',
-                   'Strawberry___healthy',
-                   'Tomato___Bacterial_spot',
-                   'Tomato___Early_blight',
-                   'Tomato___Late_blight',
-                   'Tomato___Leaf_Mold',
-                   'Tomato___Septoria_leaf_spot',
-                   'Tomato___Spider_mites Two-spotted_spider_mite',
-                   'Tomato___Target_Spot',
-                   'Tomato___Tomato_Yellow_Leaf_Curl_Virus',
-                   'Tomato___Tomato_mosaic_virus',
-                   'Tomato___healthy']
+# disease_classes = ['Apple___Apple_scab',
+#                    'Apple___Black_rot',
+#                    'Apple___Cedar_apple_rust',
+#                    'Apple___healthy',
+#                    'Blueberry___healthy',
+#                    'Cherry_(including_sour)___Powdery_mildew',
+#                    'Cherry_(including_sour)___healthy',
+#                    'Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot',
+#                    'Corn_(maize)___Common_rust_',
+#                    'Corn_(maize)___Northern_Leaf_Blight',
+#                    'Corn_(maize)___healthy',
+#                    'Grape___Black_rot',
+#                    'Grape___Esca_(Black_Measles)',
+#                    'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)',
+#                    'Grape___healthy',
+#                    'Orange___Haunglongbing_(Citrus_greening)',
+#                    'Peach___Bacterial_spot',
+#                    'Peach___healthy',
+#                    'Pepper,_bell___Bacterial_spot',
+#                    'Pepper,_bell___healthy',
+#                    'Potato___Early_blight',
+#                    'Potato___Late_blight',
+#                    'Potato___healthy',
+#                    'Raspberry___healthy',
+#                    'Soybean___healthy',
+#                    'Squash___Powdery_mildew',
+#                    'Strawberry___Leaf_scorch',
+#                    'Strawberry___healthy',
+#                    'Tomato___Bacterial_spot',
+#                    'Tomato___Early_blight',
+#                    'Tomato___Late_blight',
+#                    'Tomato___Leaf_Mold',
+#                    'Tomato___Septoria_leaf_spot',
+#                    'Tomato___Spider_mites Two-spotted_spider_mite',
+#                    'Tomato___Target_Spot',
+#                    'Tomato___Tomato_Yellow_Leaf_Curl_Virus',
+#                    'Tomato___Tomato_mosaic_virus',
+#                    'Tomato___healthy']
 
 # disease_model_path = 'models/plant_disease_model.pth'
 # disease_model = ResNet9(3, len(disease_classes))
@@ -103,37 +125,37 @@ disease_classes = ['Apple___Apple_scab',
 #     # Retrieve the class label
 #     return predictionS
 
-ad = SQLAlchemy()
-ad.init_app(app)
+# ad = SQLAlchemy()
+# ad.init_app(app)
 
 
-class User(UserMixin):
-    def __init__(self, username, password):
-        self.id = username
-        self.password = password
+# class User(UserMixin):
+#     def __init__(self, username, password):
+#         self.id = username
+#         self.password = password
 
 
-users = {
-    'user1': User('user1', 'password1'),
-    'user2': User('user2', 'password2')
-}
+# users = {
+#     'user1': User('user1', 'password1'),
+#     'user2': User('user2', 'password2')
+# }
 
 
-class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Login')
+# class LoginForm(FlaskForm):
+#     username = StringField('Username', validators=[DataRequired()])
+#     password = PasswordField('Password', validators=[DataRequired()])
+#     submit = SubmitField('Login')
 
 
-class SignupForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Signup')
+# class SignupForm(FlaskForm):
+#     username = StringField('Username', validators=[DataRequired()])
+#     password = PasswordField('Password', validators=[DataRequired()])
+#     submit = SubmitField('Signup')
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return users.get(user_id)
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return users.get(user_id)
 
 
 # @app.route('/')
@@ -143,60 +165,73 @@ def load_user(user_id):
 
 @app.route('/home')
 def home():
-    return render_template('index.html')
+    return render_template('index1.html')
+
+
+@app.route('/cropdesc')
+def cropdesc():
+    return render_template('cropdesc.html')
+
+
+@app.route('/fertdesc')
+def fertdesc():
+    return render_template('fertdesc.html')
 
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
 
-        if username not in users:
-            flash(' username deos not exist', category='erroru')
-            return render_template('login.html', form=LoginForm(), )
+        user = User.query.filter_by(email=email).first()
 
-        user = users[username]
+        if user and user.check_password(password):
+            session['email'] = user.email
+            return redirect('/home')
+        else:
+            return render_template('logginn.html', error='Invalid user')
 
-        if password != user.password:
-            flash('password deos not exist', category='errorp')
-            return render_template('login.html', form=LoginForm(), )
-
-        login_user(user, remember=True)
-
-        return redirect(url_for('home'))
-
-    return render_template("login.html", form=LoginForm())
+    return render_template('logginn.html')
 
 
-@app.route('/dashboard', methods=['GET', 'POST'])
-@login_required
-def dashboard():
-    return render_template('dashboard.html', form=LoginForm())
+# @app.route('/logout', methods=['GET', 'POST'])
+# @login_required
+# def logout():
+#     logout_user()
+#     return redirect(url_for('login'))
 
 
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        # handle request
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+
+        new_user = User(name=name, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect('/')
+
+    return render_template('signup.html')
+
+
+# @app.route('/dashboard', methods=['GET', 'POST'])
+# # login_required@
+# def dashboard():
+#     if session['email']:
+#         user = User.query.filter_by(email=session['email']).first()
+#         return render_template('dashboard.html', user=user)
+
+#     return redirect('/login')
+
+
+@app.route('/logout')
 def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'GET':
-        return render_template('signup.html', form=SignupForm())
-
-    username = request.form['username']
-    password = request.form['password']
-
-    if username in users:
-        return render_template('signup.html', form=SignupForm(), error='Username already taken')
-
-    user = User(username, password)
-    users[username] = user
-
-    return redirect(url_for('login'))
+    session.pop('email', None)
+    return redirect('/')
 
 
 @app.route('/predict')
@@ -229,35 +264,35 @@ def predict():
 
     temper_error = ''
     if temper < 25:
-        temper_error = 'temper value must be non-negative.'
+        temper_error = 'temper value  must be greater than 25.'
 
     elif temper > 38:
         temper_error = 'temper value is too high.'
 
     humi_error = ''
     if humi < 50:
-        humi_error = 'humidity value must be non-negative.'
+        humi_error = 'humidity value must be greater than 50.'
 
     elif humi > 72:
         humi_error = 'humidity value is too high.'
 
     mois_error = ''
     if mois < 25:
-        mois_error = 'moisture value must be non-negative.'
+        mois_error = 'moisture value  must be greater than 25.'
 
     elif mois > 65:
         mois_error = 'moisture value is too high.'
 
     pota_error = ''
     if pota < 0:
-        pota_error = 'photosouim value must be non-negative.'
+        pota_error = 'photosouim value  must be greater than 1.'
 
     elif pota > 19:
         pota_error = 'Potassium value is too high.'
 
     phos_error = ''
     if phosp < 0:
-        phos_error = 'Phosporus value must be non-negative.'
+        phos_error = 'Phosporus value must be greater than 1.'
 
     elif phosp > 42:
         phos_error = 'Phosporus value is too high.'
@@ -351,8 +386,8 @@ def predictcrop():
         ph_error = 'pH value must be between 3.504752 and 9.935091.'
 
     rainfall_error = ''
-    if rainfall < 20.21127 and rainfall > 298.5601:
-        rainfall_error = 'Rainfall value must be non-negative.'
+    if rainfall > 20.21127 and rainfall < 298.5601:
+        rainfall_error = 'Rainfall value must be between 20 and 298.'
 
     # Check if there are any input errors
     if nitrogen_error or phosphorus_error or potassium_error or temperature_error or humidity_error or ph_error or rainfall_error:
@@ -380,17 +415,27 @@ def predictcrop():
     return render_template('crop.html', prediction=result)
 
 
-# @app.route('/disease_pred')
-# def predco():
-#     return render_template('disease.html')
+@app.route('/dashboard')
+def dashboard():
+    if session['email']:
+        user = User.query.filter_by(email=session['email']).first()
+        return render_template('dashboard.html', user=user)
+
+    return redirect('/')
+
+
+@app.route('/disease_pred')
+def predco():
+    return render_template('disease.html')
 
 
 # @ app.route('/disease')
 # def disease_prediction():
 #     title = 'Harvestify - disease Suggestion'
-
 #     return render_template('disease.html', title=title)
-# # render disease prediction input page
+# render disease prediction input page
+
+
 # @app.route('/disease_pred', methods=['POST'])
 # def disease_pred():
 #     title = 'Harvestify - Disease Detection'
@@ -408,6 +453,8 @@ def predictcrop():
 #         except:
 #             pass
 #     return render_template('disease.html', title=title)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 

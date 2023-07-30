@@ -320,15 +320,15 @@ button {
 
 /*-- header --*/
 
-.header-area {
-    border-top: #6b7908 solid 15px;
+/* .header-area {
+    border-top: red solid 15px;
     width: 100%;
     position: absolute;
     z-index: 9999;
     height: 85px;
     background: transparent;
     line-height: 68px;
-}
+} */
 
 .logo a {
     color: #1c1c1b;
@@ -360,8 +360,9 @@ button {
 }
 
 .site-navbar ul li a {
-    color: #1c1c1b;
+    color: black !important;
     font-size: 17px;
+    font-weight: 600;
     display: block;
     text-decoration: none;
 }
@@ -427,7 +428,14 @@ button {
 .nav-toggler.toggler-open span:after {
     transform: translateY(-3px) rotate(-45deg);
 }
+/* .nav-item a{
+    color: #000;
+} */
 
+.slide{
+    width: 100vw;
+    height: 100vh;
+}
 
 /* nav-toggler css start */
 
@@ -488,23 +496,23 @@ ul.email li i {
     margin-bottom: 90px;
 }
 .willom h1 {
-    font-size: 50px;
+    font-size: 0px;
     line-height: 70px;
-    color: #fff;
+    /* color: #fff; */
     font-weight: bold;
     margin: 0 auto;
     text-align: center;
-    background: #6b7908;
+    /* background: #6b7908; */
     display: inline-block;
     padding: 36px 36px;
     border-radius: 30px;
     opacity: 0.7px;
     
 }
-.willom :hover{
+/* .willom :hover{
     background-color: green;
     color: white;
-}
+} */
 .slider_main .carousel-indicators {
      display: none;
 }
@@ -571,11 +579,14 @@ ul.email li i {
 
 .about .titlepage p {
     padding-top: 20px;
-    color: #999998;
+    color: black;
 }
 
 .about .read_more {
     margin-top: 35px;
+}
+.ul{
+    color: #000;
 }
 
 .about_img figure img:hover {

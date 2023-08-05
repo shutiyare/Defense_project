@@ -7,7 +7,7 @@ import sklearn
 import os
 import pickle
 import warnings
-# from utils.disease import disease_dic
+from utils.disease import disease_dic
 import io
 import torch
 from torchvision import transforms
@@ -20,7 +20,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
 import bcrypt
-# from utils.model import ResNet9
+from utils.model import ResNet9
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
@@ -46,121 +46,81 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-
-# bootstrap = Bootstrap(app)
-# app.config['DEBUG'] = True
-# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///flaskcrud.db"
-# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # importing pickle files
 model = pickle.load(open('models/rf_pipeline.pkl', 'rb'))
 ferti = pickle.load(open('models/fertname_dict.pkl', 'rb'))
 loaded_model = pickle.load(open("models/RandomForest.pkl", 'rb'))
-# disease_classes = ['Apple___Apple_scab',
-#                    'Apple___Black_rot',
-#                    'Apple___Cedar_apple_rust',
-#                    'Apple___healthy',
-#                    'Blueberry___healthy',
-#                    'Cherry_(including_sour)___Powdery_mildew',
-#                    'Cherry_(including_sour)___healthy',
-#                    'Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot',
-#                    'Corn_(maize)___Common_rust_',
-#                    'Corn_(maize)___Northern_Leaf_Blight',
-#                    'Corn_(maize)___healthy',
-#                    'Grape___Black_rot',
-#                    'Grape___Esca_(Black_Measles)',
-#                    'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)',
-#                    'Grape___healthy',
-#                    'Orange___Haunglongbing_(Citrus_greening)',
-#                    'Peach___Bacterial_spot',
-#                    'Peach___healthy',
-#                    'Pepper,_bell___Bacterial_spot',
-#                    'Pepper,_bell___healthy',
-#                    'Potato___Early_blight',
-#                    'Potato___Late_blight',
-#                    'Potato___healthy',
-#                    'Raspberry___healthy',
-#                    'Soybean___healthy',
-#                    'Squash___Powdery_mildew',
-#                    'Strawberry___Leaf_scorch',
-#                    'Strawberry___healthy',
-#                    'Tomato___Bacterial_spot',
-#                    'Tomato___Early_blight',
-#                    'Tomato___Late_blight',
-#                    'Tomato___Leaf_Mold',
-#                    'Tomato___Septoria_leaf_spot',
-#                    'Tomato___Spider_mites Two-spotted_spider_mite',
-#                    'Tomato___Target_Spot',
-#                    'Tomato___Tomato_Yellow_Leaf_Curl_Virus',
-#                    'Tomato___Tomato_mosaic_virus',
-#                    'Tomato___healthy']
+disease_classes = ['Apple___Apple_scab',
+                   'Apple___Black_rot',
+                   'Apple___Cedar_apple_rust',
+                   'Apple___healthy',
+                   'Blueberry___healthy',
+                   'Cherry_(including_sour)___Powdery_mildew',
+                   'Cherry_(including_sour)___healthy',
+                   'Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot',
+                   'Corn_(maize)___Common_rust_',
+                   'Corn_(maize)___Northern_Leaf_Blight',
+                   'Corn_(maize)___healthy',
+                   'Grape___Black_rot',
+                   'Grape___Esca_(Black_Measles)',
+                   'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)',
+                   'Grape___healthy',
+                   'Orange___Haunglongbing_(Citrus_greening)',
+                   'Peach___Bacterial_spot',
+                   'Peach___healthy',
+                   'Pepper,_bell___Bacterial_spot',
+                   'Pepper,_bell___healthy',
+                   'Potato___Early_blight',
+                   'Potato___Late_blight',
+                   'Potato___healthy',
+                   'Raspberry___healthy',
+                   'Soybean___healthy',
+                   'Squash___Powdery_mildew',
+                   'Strawberry___Leaf_scorch',
+                   'Strawberry___healthy',
+                   'Tomato___Bacterial_spot',
+                   'Tomato___Early_blight',
+                   'Tomato___Late_blight',
+                   'Tomato___Leaf_Mold',
+                   'Tomato___Septoria_leaf_spot',
+                   'Tomato___Spider_mites Two-spotted_spider_mite',
+                   'Tomato___Target_Spot',
+                   'Tomato___Tomato_Yellow_Leaf_Curl_Virus',
+                   'Tomato___Tomato_mosaic_virus',
+                   'Tomato___healthy']
 
-# disease_model_path = 'models/plant_disease_model.pth'
-# disease_model = ResNet9(3, len(disease_classes))
-# disease_model.load_state_dict(torch.load(
-#     disease_model_path, map_location=torch.device('cpu')))
-# disease_model.eval()
+disease_model_path = 'models/plant_disease_model.pth'
+disease_model = ResNet9(3, len(disease_classes))
+disease_model.load_state_dict(torch.load(
+    disease_model_path, map_location=torch.device('cpu')))
+disease_model.eval()
 
 
-# def predict_image(img, model=disease_model):
-#     """
-#     Transforms image to tensor and predicts disease label
-#     :params: image
-#     :return: prediction (string)
-#     """
-#     transform = transforms.Compose([
-#         transforms.Resize(256),
-#         transforms.ToTensor(),
-#     ])
-#     image = Image.open(io.BytesIO(img))
-#     img_t = transform(image)
-#     img_u = torch.unsqueeze(img_t, 0)
+def predict_image(img, model=disease_model):
+    """
+    Transforms image to tensor and predicts disease label
+    :params: image
+    :return: prediction (string)
+    """
+    transform = transforms.Compose([
+        transforms.Resize(256),
+        transforms.ToTensor(),
+    ])
+    image = Image.open(io.BytesIO(img))
+    img_t = transform(image)
+    img_u = torch.unsqueeze(img_t, 0)
 
-#     # Get predictions from model
-#     yb = model(img_u)
-#     # Pick index with highest probability
-#     _, preds = torch.max(yb, dim=1)
-#     predictionS = disease_classes[preds[0].item()]
-#     # Retrieve the class label
-#     return predictionS
+    # Get predictions from model
+    yb = model(img_u)
+    # Pick index with highest probability
+    _, preds = torch.max(yb, dim=1)
+    predictionS = disease_classes[preds[0].item()]
+    # Retrieve the class label
+    return predictionS
+
 
 # ad = SQLAlchemy()
 # ad.init_app(app)
-
-
-# class User(UserMixin):
-#     def __init__(self, username, password):
-#         self.id = username
-#         self.password = password
-
-
-# users = {
-#     'user1': User('user1', 'password1'),
-#     'user2': User('user2', 'password2')
-# }
-
-
-# class LoginForm(FlaskForm):
-#     username = StringField('Username', validators=[DataRequired()])
-#     password = PasswordField('Password', validators=[DataRequired()])
-#     submit = SubmitField('Login')
-
-
-# class SignupForm(FlaskForm):
-#     username = StringField('Username', validators=[DataRequired()])
-#     password = PasswordField('Password', validators=[DataRequired()])
-#     submit = SubmitField('Signup')
-
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return users.get(user_id)
-
-
-# @app.route('/')
-# def home():
-#     return render_template('login.html')
 
 
 @app.route('/home')
@@ -184,13 +144,22 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
+        # user = User.query.all()
         user = User.query.filter_by(email=email).first()
 
-        if user and user.check_password(password):
+        # Validation
+        if not email or not password:
+            error = "All fields are required."
+            return render_template("logginn.html", error=error)
+        # elif email not in user or user[email]["password"] != password:
+        #     error = "Invalid email or password."
+        #     return render_template("logginn.html", error=error)
+
+        elif user and user.check_password(password):
             session['email'] = user.email
             return redirect('/home')
         else:
-            return render_template('logginn.html', error='Invalid user')
+            return render_template('logginn.html', error='invalid email or password')
 
     return render_template('logginn.html')
 
@@ -209,10 +178,26 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
+        emmail = request.args.get('email')
+        user1 = User.query.filter_by(email=emmail).first()
+        users = User.query.all()
+        emails = [user.email for user in users]
+        passwords = [user.password for user in users]
+        # Validation
+        if not name or not email or not password:
+            error = "All fields are required."
+            return render_template("signup.html", error=error)
+        elif email in emails:
+            error = "Email already registered."
+            return render_template("signup.html", error=error)
+        elif password in passwords:
+            error = "password already registered."
+            return render_template("signup.html", error=error)
+        else:
+            new_user = User(name=name, email=email, password=password)
 
-        new_user = User(name=name, email=email, password=password)
-        db.session.add(new_user)
-        db.session.commit()
+            db.session.add(new_user)
+            db.session.commit()
         return redirect('/')
 
     return render_template('signup.html')
@@ -285,14 +270,14 @@ def predict():
 
     pota_error = ''
     if pota < 0:
-        pota_error = 'photosouim value  must be greater than 1.'
+        pota_error = 'photosouim value  must be non negative .'
 
     elif pota > 19:
         pota_error = 'Potassium value is too high.'
 
     phos_error = ''
     if phosp < 0:
-        phos_error = 'Phosporus value must be greater than 1.'
+        phos_error = 'Phosporus value must be non negative.'
 
     elif phosp > 42:
         phos_error = 'Phosporus value is too high.'
@@ -358,14 +343,14 @@ def predictcrop():
     #     return render_template('home.html', nitrogen_error=nitrogen_error)
     phosphorus_error = ''
     if P < 5:
-        phosphorus_error = 'Phosphorus value must be non-negative.'
+        phosphorus_error = 'Phosphorus value must be greater than 5.'
 
     elif P > 145:
         nitrogen_error = 'Nitrogen value is too high.'
 
     potassium_error = ''
     if K < 5:
-        potassium_error = 'Potassium value must be non-negative.'
+        potassium_error = 'Potassium value must greater than 5.'
 
     elif K > 205:
         potassium_error = 'Potassium value is too high .'
@@ -375,19 +360,25 @@ def predictcrop():
         temperature_error = 'Temperature must be lesson than  8.825675.'
 
     elif temp > 43.67549:
-        temperature_error = 'Temperature must be greater than 43.67549.'
+        temperature_error = 'Temperature value is too high.'
 
     humidity_error = ''
-    if humidity < 14.25804 and humidity > 99.98188:
-        humidity_error = 'Humidity must be between 0 and 100 %.'
+    if humidity < 14.25804:
+        humidity_error = 'Humidity must be greater than 14.'
+    elif humidity > 99.98188:
+        humidity_error = 'Humidity value is too high.'
 
     ph_error = ''
-    if ph < 3.504752 and ph > 9.935091:
-        ph_error = 'pH value must be between 3.504752 and 9.935091.'
+    if ph < 3.504752:
+        ph_error = 'pH value must be greater than 3.504752 '
+    elif ph > 9.935091:
+        ph_error = 'pH  value is too high.'
 
     rainfall_error = ''
-    if rainfall > 20.21127 and rainfall < 298.5601:
-        rainfall_error = 'Rainfall value must be between 20 and 298.'
+    if rainfall < 20.21127:
+        rainfall_error = 'Rainfall value must be greater than 20 and .'
+    elif rainfall > 298.5601:
+        rainfall_error = 'Rainfall value is too high.'
 
     # Check if there are any input errors
     if nitrogen_error or phosphorus_error or potassium_error or temperature_error or humidity_error or ph_error or rainfall_error:
@@ -429,30 +420,30 @@ def predco():
     return render_template('disease.html')
 
 
-# @ app.route('/disease')
-# def disease_prediction():
-#     title = 'Harvestify - disease Suggestion'
-#     return render_template('disease.html', title=title)
+@ app.route('/disease')
+def disease_prediction():
+    title = 'Harvestify - disease Suggestion'
+    return render_template('disease.html', title=title)
 # render disease prediction input page
 
 
-# @app.route('/disease_pred', methods=['POST'])
-# def disease_pred():
-#     title = 'Harvestify - Disease Detection'
-#     if request.method == 'POST':
-#         if 'file' not in request.files:
-#             return redirect(request.url)
-#         file = request.files.get('file')
-#         if not file:
-#             return render_template('disease.html', title=title)
-#         try:
-#             img = file.read()
-#             predictionS = predict_image(img)
-#             predictionS = Markup(str(disease_dic[predictionS]))
-#             return render_template('disease-result.html', predictionS=predictionS, title=title)
-#         except:
-#             pass
-#     return render_template('disease.html', title=title)
+@app.route('/disease_pred', methods=['POST'])
+def disease_pred():
+    title = 'Harvestify - Disease Detection'
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        file = request.files.get('file')
+        if not file:
+            return render_template('disease.html', title=title)
+        try:
+            img = file.read()
+            predictionS = predict_image(img)
+            predictionS = Markup(str(disease_dic[predictionS]))
+            return render_template('disease-result.html', predictionS=predictionS, title=title)
+        except:
+            pass
+    return render_template('disease.html', title=title)
 
 
 if __name__ == "__main__":

@@ -27,6 +27,7 @@
         }
 
         input[type="text"],
+        input[type="email"],
         input[type="password"] {
             border: none;
             outline: none;
@@ -40,25 +41,28 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-center align-items-center my-5 ">
 
-            <form action="/register" class="p-5 bg-success shadow-lg  w-50 rounded " method="POST">
-                <h2 class="text-light fs-1 text-center border-bottom py-2 ">Register Form</h2>
+            <form action="/register" class="p-5 bg-light shadow-lg  w-50 rounded " method="POST">
+                <h2 class="text-primary fs-1 text-center border-bottom py-2 ">Register Form</h2>
+                {% if error %}
+                <p class="text-danger  mt-2 p-0 w-50">{{ error }}</p>
+                {% endif %}
 
-                <div class="mb-4 text-light">
+                <div class="mb-4 text-dark">
                     <label for="name">Name:</label>
                     <input type="text" class="form-control" id="name" placeholder="Enter Full Name" name="name">
 
                 </div>
-                <div class="mb-3 text-light">
+                <div class="mb-3 text-dark">
                     <label for="email">Email:</label>
                     <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
                 </div>
-                <div class="mb-3 text-light">
+                <div class="mb-3 text-dark">
                     <label for="pwd">Password:</label>
                     <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password">
                 </div>
                 <div class="mb-3 form-check text-center">
 
-                    <button type="submit" class="btn btn-light w-lg   fs-5" placeholder="Login">Register</button>
+                    <button type="submit" class="btn btn-primary w-lg   fs-5" placeholder="Register">Register</button>
                 </div>
             </form>
 

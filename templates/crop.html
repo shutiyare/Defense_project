@@ -120,11 +120,11 @@
 										href="{{url_for('predict')}}">Fertilizer</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link active" href="#">disease</a>
+									<a class="nav-link active" href="{{url_for('disease_pred')}}">disease</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link active" aria-current="page"
-										href="{{url_for('logout')}}">logout</a>
+									<a class="nav-link active" aria-current="page" href="{{url_for('logout')}}"> <span
+											class="text-danger fs-5 fw-bold">📤logout </span></a>
 								</li>
 								<!-- <li><a href="Javascript:void(0)">Projects</a></li>
                             <li><a href="testimonail.html">Testimonail</a></li>
@@ -158,7 +158,7 @@
 					<input type="number" id="Nitrogen" name="Nitrogen" placeholder="Enter Nitrogen from 0-140"
 						class="form-control" required>
 					{% if nitrogen_error %}
-					<div class="alert alert-danger">{{ nitrogen_error }}</div>
+					<div class="text-danger">{{ nitrogen_error }}</div>
 					{% endif %}
 				</div>
 				<div class="col-md-6">
